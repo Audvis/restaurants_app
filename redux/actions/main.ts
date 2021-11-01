@@ -8,8 +8,8 @@ export const getRestaurants = () => (
                 {
                     method: "GET",
                     headers: {
-                        Accept: "application/json",
-                        "Accept-Language": "spanish",
+                        "Accept": "application/json",
+                        "Accept-Language": "en",
                     },
                 }
             );

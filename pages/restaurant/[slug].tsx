@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Layout from "../../components/layout/Layout";
 
 const slug = () => {
   const router = useRouter();
-//   const slug = router.asPath.split("/")[2];
-  const slug = router.query.slug
+  //   const slug = router.asPath.split("/")[2];
+  const slug = router.query.slug;
 
   const [Info, setInfo] = useState({
     name: "",
@@ -15,7 +16,8 @@ const slug = () => {
     reviews: [],
   });
   const [Types, setTypes] = useState([]);
-  
+  const [Reviews, setReviews] = useState([]);
+
   useEffect(() => {
     const getInfoRestaurant = async () => {
       try {
@@ -25,7 +27,7 @@ const slug = () => {
             method: "GET",
             headers: {
               Accept: "application/json",
-              "Accept-Language": "spanish",
+              "Accept-Language": "es",
             },
           }
         );
@@ -33,46 +35,52 @@ const slug = () => {
         setInfo(data);
 
         let arr = [];
-        
+
         data.food_type.map(async (food_type) => {
-            
-            const responseType = await fetch(
-                `https://tellurium.behuns.com/api/food_types/${food_type}/`,
-                {
-                    method: "GET",
-                    headers: {
-                        Accept: "application/json",
-                        "Accept-Language": "spanish",
-                    },
-                }
-            );
-            const dataType = await responseType.json();
-            arr.push(dataType);
-            setTypes(Types.concat(arr))
-        })
-        
+          const responseType = await fetch(
+            `https://tellurium.behuns.com/api/food_types/${food_type}/`,
+            {
+              method: "GET",
+              headers: {
+                Accept: "application/json",
+                "Accept-Language": "es",
+              },
+            }
+          );
+          const dataType = await responseType.json();
+          arr.push(dataType);
+          setTypes(Types.concat(arr));
+        });
       } catch (error) {
         console.log(error);
       }
     };
-    
+
     getInfoRestaurant();
-       
-    
   }, []);
-console.log(Types)
+  console.log(Info);
   return (
     <div>
-      <h1>{Info.name}</h1>
+      <Layout>
+        <h1>{Info.name}</h1>
+      </Layout>
       <p>{Info.description}</p>
-      <img src={Info.logo} alt="" />
+      <img src={Info.logo} alt="imageLogo" />
       <p>{Info.rating}</p>
       <ul>
-                {
-                Types.map((food_type) => (
-                    <li >{food_type.name}</li>
-                ))}
-            </ul>
+        {Types.map((food_type) => (
+          <li key={food_type.slug}>{food_type.name}</li>
+        ))}
+      </ul>
+      <ul>
+        {Info.reviews.map((review) => (
+          <li key={review.slug}>
+            <p>{review.comments}</p>
+            <p>{review.email}</p>
+            <p>{review.rating}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
