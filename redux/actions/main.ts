@@ -1,14 +1,15 @@
 import * as t from '../types';
+import API from '../../api/api'
 
-export const getRestaurants = () => (
+export const getRestaurants = (food_type) => (
     async function apiCall(dispatch: Function) {
         try {
             const response = await fetch(
-                "https://tellurium.behuns.com/api/restaurants/",
+                `${API}restaurants/${food_type}`,
                 {
                     method: "GET",
                     headers: {
-                        "Accept": "application/json",
+                        Accept: "application/json",
                         "Accept-Language": "en",
                     },
                 }
@@ -22,5 +23,14 @@ export const getRestaurants = () => (
             console.log(error);
         }
     }
-
 );
+
+
+export function setFilter(food_type){
+    return {
+        type: t.SET_FILTER,
+        payload: food_type
+    }
+}
+ 
+

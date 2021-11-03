@@ -3,6 +3,7 @@ import * as t from '../types';
 //INTERFACE
 interface IMainState {
     allRestaurantsState: object[],
+    filterState: string
 }
 interface IAction {
     type: string,
@@ -12,6 +13,7 @@ interface IAction {
 //INITIAL_STATE
 const initialState: IMainState = {
     allRestaurantsState: [],
+    filterState: '',
 };
 
 const reducerMain = (state = initialState, action: IAction): IMainState => {
@@ -21,6 +23,14 @@ const reducerMain = (state = initialState, action: IAction): IMainState => {
                 ...state,
                 allRestaurantsState: action.payload
             };
+
+            case t.SET_FILTER:
+                return {
+                    ...state,
+                    filterState: action.payload
+                };    
+
+
         default:
             return state;
     }

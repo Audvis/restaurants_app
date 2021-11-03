@@ -15,7 +15,6 @@ const Container = styled.header`
 const Header = () => {
     return (
         <Container>
-            <h4>Header</h4>
             <Nav />
         </Container>
     )

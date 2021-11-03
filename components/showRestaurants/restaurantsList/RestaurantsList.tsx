@@ -2,7 +2,6 @@ import React from "react";
 import { useSelector } from "react-redux";
 import RestaurantCard from "../restaurantCard/RestaurantCard";
 import styled from '@emotion/styled';
-import { css } from '@emotion/react';
 
 const Ul = styled.ul`
   display: flex;
@@ -12,7 +11,6 @@ const Ul = styled.ul`
     flex-direction: column;
   }
 `
-
 const RestaurantsList: React.FC = () => {
   const { allRestaurantsState } = useSelector((state: any) => state.reducerMain);
   return (

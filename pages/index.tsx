@@ -1,30 +1,25 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import FilterBar from "../components/layout/FilterBar";
 import Layout from "../components/layout/Layout";
 import RestaurantsList from "../components/showRestaurants/restaurantsList/RestaurantsList";
 import { getRestaurants } from "../redux/actions/main";
-import styled from "@emotion/styled";
-
-const Heading = styled.h1`
-  color: var(--primaryColor);
-  @media (min-width: 768px) {
-    text-align: center;
-  }
-`;
 
 function Home(): JSX.Element {
   const dispatch = useDispatch();
+  const { filterState } = useSelector((state: any) => state.reducerMain);
 
   useEffect(() => {
-    dispatch(getRestaurants());
-  }, []);
+    dispatch(getRestaurants(filterState));
+  }, [filterState]);
 
   return (
     <div>
       <Layout>
+      <FilterBar />
           <h1>Home</h1>
       </Layout>
-
+     
       <RestaurantsList />
     </div>
   );

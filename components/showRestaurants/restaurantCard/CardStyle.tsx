@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 
-//stylesheet
 export const Card = styled.div`
   background-color: var(--primaryColor);
   width: 35rem;

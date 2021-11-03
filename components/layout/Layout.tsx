@@ -1,9 +1,7 @@
-import React from "react";
 import Header from "./Header";
 import { Global, css } from "@emotion/react";
 import styled from '@emotion/styled';
 import Head from "next/head";
-
 
 const Title = styled.div`
   text-align: center;
@@ -65,7 +63,6 @@ const Layout = (props) => {
           }
         `}
       />
-
       <Head>
         <html lang="es" />
         <title>Restaurant App</title>
@@ -85,10 +82,7 @@ const Layout = (props) => {
       <Header />
     <Title>
     <main>{props.children}</main>
-    </Title>
-      
-        
-      
+    </Title>      
     </>
   );
 };

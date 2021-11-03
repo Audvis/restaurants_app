@@ -7,8 +7,8 @@ const Nav = () => {
             <Link href="/">
                 Inicio
             </Link>
-            <Link href="/otro">
-                Otro
+            <Link href="/create/restaurant">
+                Add Restaurant
             </Link>
         </nav>
     )
