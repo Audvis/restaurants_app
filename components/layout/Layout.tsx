@@ -64,19 +64,18 @@ const Layout = (props) => {
         `}
       />
       <Head>
-        <html lang="es" />
         <title>Restaurant App</title>
         <link rel="icon" href="/favicon.ico" />
         <link
           rel="stylessheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
         />
-        <link rel="preconnect" href="https://fonts.googleapis.com"></link>
-        <link rel="preconnect" href="https://fonts.gstatic.com"></link>
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com"/>
         <link
           href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap"
           rel="stylesheet"
-        ></link>
+        />
         <link rel="stylesheet" href="/static/css/app.css" />
       </Head>
       <Header />

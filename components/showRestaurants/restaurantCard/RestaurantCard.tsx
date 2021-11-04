@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { Card, Title, Img, Description, Rating } from './CardStyle'
+import { Card, Title, Img, Description, Rating } from './StylesCard'
 
 interface IRestaurantCardProps {
   restaurant: {
@@ -23,7 +23,6 @@ const RestaurantCard: React.FC<IRestaurantCardProps> = ({ restaurant }) => {
           </Description>
           <Rating>
             <p>{Math.round(restaurant.rating)}</p>
-            {/* <p>{Number(restaurant.rating).toFixed(1)}</p> */}
           </Rating>
         </Card>
     </Link>

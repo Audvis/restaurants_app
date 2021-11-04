@@ -1,12 +1,15 @@
-import { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/router";
+import { Img, ContainerData, Description, Rating, Types } from "./StylesSlug";
 import Layout from "../../components/layout/Layout";
+import TypeCard from '../../components/showTypes/TypeCard'
 import API from "../../api/api";
+import ReviewCard from "../../components/showReviews/ReviewCard";
+import CreateReview from "../../components/createReview/CreateReview";
 
 const slug = () => {
   const router = useRouter();
-  //   const slug = router.asPath.split("/")[2];
-  const slug = router.query.slug;
+  const { slug } = router.query;
 
   const [Info, setInfo] = useState({
     name: "",
@@ -17,11 +20,12 @@ const slug = () => {
     reviews: [],
   });
   const [Types, setTypes] = useState([]);
-
+  const [Loading, setLoading] = useState(false)
+ 
   useEffect(() => {
     const getInfoRestaurant = async () => {
+      setLoading(true);
       try {
-        
         const response = await fetch(`${API}restaurants/${slug}/`, {
           method: "GET",
           headers: {
@@ -46,40 +50,47 @@ const slug = () => {
           foodTypesArr.push(dataType);
           setTypes(Types.concat(foodTypesArr));
         });
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
     };
-      getInfoRestaurant();  
-  }, []);
-  console.log(Info);
+    getInfoRestaurant();
+  }, [slug]);
+
+  if(Loading){
+    return <h1>Loading...</h1>
+  }else
   return (
-    <div>
+    <>
       <Layout>
         <h1>{Info.name}</h1>
       </Layout>
-      <p>{Info.description}</p>
-      <img src={Info.logo} alt="imageLogo" />
-      <p>{Info.rating}</p>
+      <ContainerData>
+      <Img src={Info.logo} alt="imageLogo"/>
+      <Description>{Info.description}</Description>
+      <Rating>Rating: {Number(Info.rating).toFixed(1)}</Rating> 
+      <h3>Types</h3>
       <ul>
         {Types.map((food_type) => (
-          <li key={food_type.slug}>{food_type.name}</li>
+          <TypeCard key={food_type.slug} food_type={food_type}/>
         ))}
       </ul>
+      <h3>Reviews</h3>
+      <CreateReview slug={slug} />
       {!Info.reviews? (
         <p>No hay reviews</p>
       ) : (
+        <>
         <ul>
           {Info.reviews.map((review) => (
-            <li key={review.slug}>
-              <p>{review.comments}</p>
-              <p>{review.email}</p>
-              <p>{review.rating}</p>
-            </li>
+           <ReviewCard key={review.slug} review={review}/>
           ))}
         </ul>
+        </>
       )}
-    </div>
+      </ContainerData>
+    </>
   );
 };
 

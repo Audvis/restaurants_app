@@ -5,10 +5,10 @@ const Nav = () => {
     return (
         <nav>
             <Link href="/">
-                Inicio
+                Home
             </Link>
             <Link href="/create/restaurant">
-                Add Restaurant
+                Add 
             </Link>
         </nav>
     )
