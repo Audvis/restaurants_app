@@ -6,6 +6,8 @@ const Container = styled.header`
     background-color: #333;
     color: #fff;
     padding: 1rem;
+    display: flex;
+    justify-content: center;
 
     @media (min-width: 768px) {
         padding: 2rem;

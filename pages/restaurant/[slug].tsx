@@ -2,16 +2,17 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import { Img, ContainerData, Description, Rating, Types } from "./StylesSlug";
 import Layout from "../../components/layout/Layout";
-import TypeCard from '../../components/showTypes/TypeCard'
 import API from "../../api/api";
 import ReviewCard from "../../components/showReviews/ReviewCard";
 import CreateReview from "../../components/createReview/CreateReview";
+import TypeCard from "../../components/showTypes/TypeCard";
+import EditRestaurant from "../../components/editRestaurant/EditRestaurant"
 
 const slug = () => {
   const router = useRouter();
   const { slug } = router.query;
 
-  const [Info, setInfo] = useState({
+  const [Restaurant, setRestaurant] = useState({
     name: "",
     description: "",
     logo: "",
@@ -34,7 +35,7 @@ const slug = () => {
           },
         });
         const data = await response.json();
-        setInfo(data);
+        setRestaurant(data);
 
         let foodTypesArr = [];
 
@@ -64,26 +65,41 @@ const slug = () => {
   return (
     <>
       <Layout>
-        <h1>{Info.name}</h1>
+        
       </Layout>
       <ContainerData>
-      <Img src={Info.logo} alt="imageLogo"/>
-      <Description>{Info.description}</Description>
-      <Rating>Rating: {Number(Info.rating).toFixed(1)}</Rating> 
+      <h1>{Restaurant.name}</h1>
+      <Img src={Restaurant.logo} alt="imageLogo"/>
+      <Description>{Restaurant.description}</Description>
+      <Rating>Rating: {Number(Restaurant.rating).toFixed(1)}</Rating> 
       <h3>Types</h3>
       <ul>
         {Types.map((food_type) => (
           <TypeCard key={food_type.slug} food_type={food_type}/>
         ))}
       </ul>
+
+          <EditRestaurant
+          ContainerData={ContainerData} 
+            Restaurant={Restaurant}
+            Img={Img}
+            Description={Description}
+            Rating={Rating}
+            Types={Types}
+            TypeCard={TypeCard}
+            setRestaurant={setRestaurant}
+          />
+
+
+
       <h3>Reviews</h3>
       <CreateReview slug={slug} />
-      {!Info.reviews? (
+      {!Restaurant.reviews? (
         <p>No hay reviews</p>
       ) : (
         <>
         <ul>
-          {Info.reviews.map((review) => (
+          {Restaurant.reviews.map((review) => (
            <ReviewCard key={review.slug} review={review}/>
           ))}
         </ul>

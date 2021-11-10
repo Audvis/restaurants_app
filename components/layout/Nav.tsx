@@ -1,16 +1,30 @@
-import React from 'react';
 import Link from "next/link";
+import styled from "@emotion/styled";
+
+const Nave = styled.nav`
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+
+`;
+
+const Item = styled.p`
+margin-right: 7px;
+`;
 
 const Nav = () => {
     return (
-        <nav>
+        <Nave>
             <Link href="/">
-                Home
+              <Item>Home</Item>  
             </Link>
             <Link href="/create/restaurant">
-                Add 
+            <Item>Add</Item> 
             </Link>
-        </nav>
+            <Link href="/food_types">
+            <Item>Food</Item> 
+            </Link>
+        </Nave>
     )
 }
 

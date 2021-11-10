@@ -78,6 +78,8 @@ const Layout = (props) => {
         />
         <link rel="stylesheet" href="/static/css/app.css" />
       </Head>
+
+      
       <Header />
     <Title>
     <main>{props.children}</main>
