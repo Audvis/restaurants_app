@@ -1,54 +1,131 @@
-import React from "react";
+import { useState, useEffect } from 'react';
 import Select from "react-select";
+import API from "../../api/api"
 
 const EditRestaurant = ({
   ContainerData,
   Restaurant,
   Img,
   Description,
-  Rating,
   Types,
   TypeCard,
   setRestaurant
 }) => {
+
+  const [CopyRestaurant, setCopyRestaurant] = useState({...Restaurant});
+  const [FoodTypes, setFoodTypes] = useState([]);
+  const [PrintTypes, setPrintTypes] = useState([]);
+  console.log(PrintTypes);
+
+  useEffect(() => {
+    const apiGetTypes = async () => {
+      try {
+        const response = await fetch(`${API}food_types/`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Accept-Language": "en",
+          },
+        });
+        const data = await response.json();
+        setFoodTypes(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    setPrintTypes(Types);
+    apiGetTypes();
+    
+  }, []);
+
+
+  const foodTypesArr = [];
+  FoodTypes.map((type) =>
+    foodTypesArr.push({
+      value: type.slug,
+      label: type.name,
+    })
+  );
+
+  const selectedTypesArr = [];
+  Types.map((type) =>
+    selectedTypesArr.push({
+      value: type.slug,
+      label: type.name,
+    })
+  );
+  
+
+  function deleteRestaurant(slug){
+     const deleteApiRestaurant = async () => {
+      try{
+        const response = await fetch(`${API}restaurants/${slug}/`, {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "Accept-Language": "en",
+          }
+        });
+        const data = await response.json();
+        console.log(data);
+      }catch(error){
+        console.log(error);
+      }
+    }
+    deleteApiRestaurant();
+  }
+
+  function updateTypes(t){
+console.log('t----------',t)
+    setCopyRestaurant({
+       ...CopyRestaurant, 
+        food_type: t.map(e => e.value) 
+      });
+      setPrintTypes(t.map(e => ({name: e.label, slug: e.value})));
+  }
+
   return (
     <ContainerData>
-      <h1>{Restaurant.name}</h1>
+      <h1>{CopyRestaurant.name}</h1>
       <input
         type="text"
-        value={Restaurant.name}
-        onChange={(e) => setRestaurant({ ...Restaurant, name: e.target.value })}
+        value={CopyRestaurant.name}
+        onChange={(e) => setCopyRestaurant({ ...CopyRestaurant, name: e.target.value })}
       />
-      <Img src={Restaurant.logo} alt="imageLogo" />
-      <Description>{Restaurant.description}</Description>
+      <Img src={CopyRestaurant.logo} alt="imageLogo" />
+      <Description>{CopyRestaurant.description}</Description>
       <input
         type="text"
-        value={Restaurant.description}
+        value={CopyRestaurant.description}
         onChange={(e) =>
-          setRestaurant({ ...Restaurant, description: e.target.value })
+          setCopyRestaurant({ ...CopyRestaurant, description: e.target.value })
         }
       />
-      <Rating>Rating: {Number(Restaurant.rating).toFixed(1)}</Rating>
       <h3>Types</h3>
       <ul>
-        {Types.map((food_type) => (
-          <TypeCard key={food_type.slug} food_type={food_type} />
+        {PrintTypes.map((type) => (
+          <TypeCard key={type.slug} food_type={type} />
+
         ))}
       </ul>
       <div>
         <Select
+         defaultValue={selectedTypesArr}
           isDisabled={false}
           isLoading={false}
           isClearable={false}
           isRtl={false}
           isSearchable={true}
-          options={Types}
+          options={foodTypesArr}
           name="food_types"
-          onChange={setRestaurant({ ...Restaurant, food_types: Types })}
+          onChange={e => updateTypes(e)}
           instanceId="food_types"
           isMulti
         />
       </div>
+      <button onClick={() => deleteRestaurant(Restaurant.slug)}>delete</button>
     </ContainerData>
   );
 };
