@@ -1,17 +1,67 @@
 import { useState, useEffect } from "react";
 import Select from "react-select";
 import API from "../../api/api";
+import styled from "@emotion/styled";
 
+const Form = styled.form`
+ width: 70rem;
+ min-height: 55rem;
+ max-height: fit-content;
+ background-color: var(--primaryColor);
+ color: var(--white);
+ padding: 5rem;
+ border-radius: 5px;
+ box-shadow: 3px 3px 4px rgba(0,0,0,0.5);
+ display: flex;
+ flex-direction: column;
+ @media (max-width: 768px) {
+   width: 90%;
+ }
+`;
+const Title = styled.h4`
+text-align: center;
+  font-size: 4.7rem;
+`;
+const SubContainer = styled.div`
+  display: flex;
+  align-items: space-between;
+  margin-bottom: 3rem;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+const Label = styled.label`
+  margin-right: 2rem;
+`;
+const Input = styled.input`
+  width: 100%;
+`;
+const Textarea = styled.textarea`
+  resize: none;
+  width: 100%;
+  height: 10rem;
+`;
+const Button = styled.input`
+  margin: auto;
+  margin-top: 3rem;
+  padding: 1rem;
+  width: 30%;
+  background-color: var(--secondaryColor);
+  border-radius: 7px;
+`;
 
 const CreateRestaurant = () => {
+
+  //States______________________________________________________________________________________________________________
   const [Restaurant, setRestaurant] = useState({
     name: "",
     description: "",
-    logo: {},
-    food_type: [{}],
+    logo: null,
+    food_type: '',
   });
-  const [FoodTypes, setFoodTypes] = useState([{ slug: "", name: "" }]);
+  const { name, description, logo } = Restaurant;
 
+  const [FoodTypes, setFoodTypes] = useState([{ slug: "", name: "" }]);
   const foodTypesArr = [];
   FoodTypes.map((type) =>
     foodTypesArr.push({
@@ -20,6 +70,7 @@ const CreateRestaurant = () => {
     })
   );
 
+  //UseEffect______________________________________________________________________________________________________________
   useEffect(() => {
     const apiGetTypes = async () => {
       try {
@@ -39,50 +90,58 @@ const CreateRestaurant = () => {
     apiGetTypes();
   }, []);
 
-  const { name, description, logo } = Restaurant;
-
+  
+  //Function______________________________________________________________________________________________________________
   const updateRestaurant = (e) => {
     setRestaurant({
       ...Restaurant,
       [e.target.name]: e.target.value,
     });
   };
-
   const uploadLogo = (e) => {
-    console.log(e.target.files[0]);
-    const f = new FormData();
-    f.append("logo", e.target.files[0]);
-    // f.append("name", e.target.files[0].name);
-    // f.append("file", e.target.files[0]);
     setRestaurant({
       ...Restaurant,
-      logo: f,
+      logo: e.target.files[0],
     });
   };
-
   const updateTypes = (e) => {
     setRestaurant({
       ...Restaurant,
       food_type: e.map((type) => type.value),
     });
   };
-
   const onSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault();   
+    const f = new FormData();
+    f.append("logo", logo);
+    const apiData = {...Restaurant, logo: null};
     const postRestaurant = async () => {
       try {
         let config = {
           method: "POST",
           headers: {
-            Accept: "application/json",
+            "Accept": "application/json",
             "Content-Type": "application/json",
             "Accept-Language": "en",
           },
-          body: JSON.stringify(Restaurant),
+          body: JSON.stringify(apiData),
         };
         let res = await fetch(`${API}restaurants/`, config);
         let json = await res.json();
         console.log("respuestaApi-------------", json);
+
+        let configPatch = {
+          method: "PATCH",
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "multipart/form-data; boundary=something",
+            "Accept-Language": "en",
+          },
+          body: f.get("logo"),
+        };
+        let resPatch = await fetch(`${API}restaurants/${json.slug}/`, configPatch);
+        let jsonPatch = await resPatch.json();
+        console.log("respuestaApiPatch-------------", jsonPatch);
       } catch (err) {
         console.log(err);
       }
@@ -91,31 +150,32 @@ const CreateRestaurant = () => {
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <div>
-        <label htmlFor="">Name</label>
-        <input
+    <Form onSubmit={onSubmit}>
+      <Title>Form</Title>
+      <SubContainer>
+        <Label htmlFor="">Name</Label>
+        <Input
           type="text"
           name="name"
           value={name}
           onChange={updateRestaurant}
         />
-      </div>
-      <div>
-        <label htmlFor="">Description</label>
-        <input
-          type="text"
+      </SubContainer>
+      <SubContainer>
+        <Label htmlFor="">Description</Label>
+        <Textarea
           name="description"
           value={description}
           onChange={updateRestaurant}
         />
-      </div>
-      <div>
-        <label htmlFor="">Logo</label>
-        <input type="file" accept="image/*"  name="logo" onChange={uploadLogo} />
-      </div>
+      </SubContainer>
+      <SubContainer>
+        <Label htmlFor="">Logo</Label>
+        <Input type="file" accept="image/*"  name="logo" onChange={uploadLogo} />
+      </SubContainer>
       {/* <img src={logo} alt="imagen subida" /> */}
-      <div>
+      <SubContainer>
+      <Label htmlFor="">Types</Label>
         <Select
           isDisabled={false}
           isLoading={false}
@@ -128,9 +188,9 @@ const CreateRestaurant = () => {
           instanceId="food_types"
           isMulti
         />
-      </div>
-      <input type="submit" />
-    </form>
+      </SubContainer>
+      <Button type="submit" />
+    </Form>
   );
 };
 

@@ -10,6 +10,7 @@ const Nave = styled.nav`
 
 const Item = styled.p`
 margin-right: 7px;
+cursor: pointer;    
 `;
 
 const Nav = () => {

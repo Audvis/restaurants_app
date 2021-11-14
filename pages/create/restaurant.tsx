@@ -1,13 +1,22 @@
 import CreateRestaurant from "../../components/createRestaurant/CreateRestaurant";
-import Layout from "../../components/layout/Layout"
+import Layout from "../../components/layout/Layout";
+import styled from "@emotion/styled";
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
 const restaurant = () => {
   return (
-    <div>
+    <>
       <Layout>
-        <h1>Form</h1>
+        <h1>Add Restaurant</h1>
       </Layout>
+    <Container>
       <CreateRestaurant />
-    </div>
+    </Container>
+    </>
   );
 };
 

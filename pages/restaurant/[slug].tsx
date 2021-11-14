@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { Img, ContainerData, Description, Rating, Types } from "./StylesSlug";
+import { Img, ContainerData, Description, Rating, H3, UlTypes, Reviews } from "./StylesSlug";
 import Layout from "../../components/layout/Layout";
 import API from "../../api/api";
 import ReviewCard from "../../components/showReviews/ReviewCard";
@@ -23,6 +23,8 @@ const slug = () => {
   const [Types, setTypes] = useState([]);
   const [Loading, setLoading] = useState(false);
   const [SwitchEdit, setSwitchEdit] = useState(false);
+  const [SwitchReview, setSwitchReview] = useState(false);
+  const [ChangeState, setChangeState] = useState(0);
 
   useEffect(() => {
     const getInfoRestaurant = async () => {
@@ -58,7 +60,7 @@ const slug = () => {
       }
     };
     getInfoRestaurant();
-  }, [slug]);
+  }, [slug, ChangeState]);
 
   if (Loading) {
     return <h1>Loading...</h1>;
@@ -75,9 +77,11 @@ const slug = () => {
                 Restaurant={Restaurant}
                 Img={Img}
                 Description={Description}
+                UlTypes={UlTypes}
                 Types={Types}
                 TypeCard={TypeCard}
-                setRestaurant={setRestaurant}
+                ChangeState={ChangeState}
+                setChangeState={setChangeState}
               />
             </>
           ) : (
@@ -87,23 +91,29 @@ const slug = () => {
               <Img src={Restaurant.logo} alt="imageLogo" />
               <Description>{Restaurant.description}</Description>
               <Rating>Rating: {Number(Restaurant.rating).toFixed(1)}</Rating>
-              <h3>Types</h3>
-              <ul>
+              <H3>Types</H3>
+              <UlTypes>
                 {Types.map((food_type) => (
                   <TypeCard key={food_type.slug} food_type={food_type} />
                 ))}
-              </ul>
-              <h3>Reviews</h3>
-              <CreateReview slug={slug} />
+              </UlTypes>
+              <H3>Reviews</H3>
+              
+              {!SwitchReview ? <button onClick={() => setSwitchReview(true)}>Create Review</button>:<>
+                <button onClick={() => setSwitchReview(false)}>X</button>
+              <CreateReview 
+              slug={slug} 
+              setChangeState={setChangeState}/>
+              </>}
               {!Restaurant.reviews ? (
                 <p>No hay reviews</p>
               ) : (
                 <>
-                  <ul>
+                  <Reviews>
                     {Restaurant.reviews.map((review) => (
                       <ReviewCard key={review.slug} review={review} />
                     ))}
-                  </ul>
+                  </Reviews>
                 </>
               )}
             </>

@@ -16,7 +16,7 @@ const Layout = (props) => {
         styles={css`
           :root {
             --backgroundColor: #f5f5f5;
-            --primaryColor: #AA1616 ;
+            --primaryColor: #970000;
             --secondaryColor: #254475;
             --white: #F7F6F6;
             --black: #1C1C1C 
@@ -57,6 +57,10 @@ const Layout = (props) => {
             margin: 0;
             padding: 0;
           }
+          li {
+            margin: 0;
+            padding: 0;
+          }
           a {
             text-decoration: none;
             color: var(--PrimaryColor);
@@ -81,7 +85,7 @@ const Layout = (props) => {
 
       
       <Header />
-    <Title>
+    <Title> 
     <main>{props.children}</main>
     </Title>      
     </>

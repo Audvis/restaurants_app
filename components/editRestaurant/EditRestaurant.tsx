@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import Select from "react-select";
-import API from "../../api/api"
+import API from "../../api/api";
+
 
 const EditRestaurant = ({
   ContainerData,
@@ -9,14 +11,16 @@ const EditRestaurant = ({
   Description,
   Types,
   TypeCard,
-  setRestaurant
+  UlTypes,
+  ChangeState,
+  setChangeState,
 }) => {
+  const router = useRouter();
 
   const [CopyRestaurant, setCopyRestaurant] = useState({...Restaurant});
   const [FoodTypes, setFoodTypes] = useState([]);
   const [PrintTypes, setPrintTypes] = useState([]);
-  console.log(PrintTypes);
-
+  console.log(CopyRestaurant);
   useEffect(() => {
     const apiGetTypes = async () => {
       try {
@@ -36,7 +40,6 @@ const EditRestaurant = ({
 
     setPrintTypes(Types);
     apiGetTypes();
-    
   }, []);
 
 
@@ -57,33 +60,55 @@ const EditRestaurant = ({
   );
   
 
-  function deleteRestaurant(slug){
+  function deleteRestaurant(){
      const deleteApiRestaurant = async () => {
       try{
-        const response = await fetch(`${API}restaurants/${slug}/`, {
+        const response = await fetch(`${API}restaurants/${Restaurant.slug}/`, {
           method: "DELETE",
           headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
+            "Accept": "application/json",
             "Accept-Language": "en",
           }
         });
         const data = await response.json();
         console.log(data);
+        router.push("/")
       }catch(error){
         console.log(error);
+        router.push("/")
       }
     }
     deleteApiRestaurant();
   }
 
   function updateTypes(t){
-console.log('t----------',t)
     setCopyRestaurant({
        ...CopyRestaurant, 
         food_type: t.map(e => e.value) 
       });
       setPrintTypes(t.map(e => ({name: e.label, slug: e.value})));
+  }
+  
+  function updateRestaurant(){
+    const updateApiRestaurant = async () => {
+      try{
+        const response = await fetch(`${API}restaurants/${CopyRestaurant.slug}/`, {
+          method: "PUT",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "Accept-Language": "en",
+          },
+          body: JSON.stringify(CopyRestaurant)
+        });
+        const data = await response.json();
+        console.log(data);
+        router.reload(); 
+      }catch(error){
+        console.log(error);
+      }
+    }
+    updateApiRestaurant();
   }
 
   return (
@@ -104,12 +129,12 @@ console.log('t----------',t)
         }
       />
       <h3>Types</h3>
-      <ul>
+      <UlTypes>
         {PrintTypes.map((type) => (
           <TypeCard key={type.slug} food_type={type} />
 
         ))}
-      </ul>
+      </UlTypes>
       <div>
         <Select
          defaultValue={selectedTypesArr}
@@ -125,7 +150,8 @@ console.log('t----------',t)
           isMulti
         />
       </div>
-      <button onClick={() => deleteRestaurant(Restaurant.slug)}>delete</button>
+      <button onClick={() => updateRestaurant()}>Update</button>
+      <button onClick={() => deleteRestaurant()}>delete</button>
     </ContainerData>
   );
 };
